@@ -1,6 +1,6 @@
 # Jarvis V1
 
-Voice-activated AI desktop assistant with **local neural face recognition** (YuNet + SFace ONNX on CPU), owner/guest roles, NVIDIA LLM tools, and optional folder protection.
+Cross-platform voice AI desktop assistant (Windows, **macOS**, **Linux**) with local face recognition, NVIDIA LLM tools, vision-guided UI clicks, and owner/guest roles.
 
 ## Quick start
 
@@ -16,17 +16,29 @@ python Jarvis.py
 
 ## Features
 
-- Wake-word + NVIDIA chat models
-- **Local face recognition** — downloads YuNet + SFace (~15MB) once to `~/.jarvis_core/onnx_models/` (CPU-friendly; Haar fallback)
-- Owner / Guest roles
-- Non-blocking startup auto-identify
-- Face-gated shutdown; unknown face → warning + screen lock
-- Optional owner-only encrypt of Desktop/Documents/Downloads (not Windows)
-- Offline command fallbacks
+- Wake-word listening and NVIDIA chat models (tool calling, multi-step actions)
+- **Vision UI control** — `vision_ui_act` screenshots the desktop, sends it to NVIDIA vision models (`meta/llama-3.2-90b-vision-instruct`, etc.), and performs clicks/typing
+- Mouse move/click/drag/scroll (pyautogui) on Windows, macOS, and Linux
+- Local face recognition: YuNet + SFace ONNX (CPU) with Haar fallback
+- Owner / Guest roles; face-gated shutdown and folder protection
+- Volume, media keys, screenshots, hotkeys, folders, URLs, power actions
+- Offline command subset when the network is down
 
-## Hardware notes
+## Platform notes
 
-Tested design target: **CPU-only, 16GB RAM** (e.g. Dell Latitude 7440). No GPU required for face models.
+| Area | Windows | macOS | Linux |
+|------|---------|-------|-------|
+| Mouse / type / hotkeys | pyautogui | pyautogui (+ Accessibility permission) | pyautogui / xdotool (X11) |
+| Screenshots | pyautogui / PowerShell | screencapture | gnome-screenshot / scrot / ImageMagick |
+| Volume | Win APIs | osascript | pactl |
+| Apps | startfile | `open -a` | PATH / gtk-launch |
+
+On **macOS**, grant Accessibility + Screen Recording to Terminal/Python for mouse and screenshots.  
+On **Linux**, use an X11 session for best automation; install `xdotool` and `scrot` if needed.
+
+## Hardware
+
+Works on **CPU-only, 16GB RAM** laptops (e.g. Dell Latitude). Face models ~15MB once downloaded to `~/.jarvis_core/onnx_models/`.
 
 ## License
 
