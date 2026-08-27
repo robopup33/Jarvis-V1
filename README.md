@@ -1,142 +1,137 @@
 # Jarvis V1
 
-**Jarvis V1** is a voice-activated AI desktop assistant for Windows (with limited support notes for other platforms). It features:
+**Jarvis V1** is a voice-activated AI desktop assistant with cross-platform improvements. It features wake-word detection, speech recognition, local TTS, NVIDIA-hosted LLM tool calling, offline fallbacks, face enrollment, and system control tools.
 
-- Wake-word detection ("Hey Jarvis" or custom name)
-- Speech recognition and local text-to-speech
-- NVIDIA-hosted LLM integration with tool calling
-- Facial enrollment (stores profile photos)
-- Laptop control tools (run commands, lock screen, system status)
-- Simple animated UI and setup wizard
-
-> **Important**: This project is primarily designed for **Windows**. Many features (screen lock, some voice engines, process flags, pywin32) are Windows-specific. On macOS/Linux, core voice and API features may work with modifications, but full functionality is not guaranteed.
+> **Note**: Best experience is on **Windows**. macOS and Linux are supported for core features (voice, API, basic tools), but some system actions and voice engines vary by platform.
 
 ## Features
 
-- Voice wake-word listening
-- Conversational AI via NVIDIA API (DeepSeek / Nemotron models)
-- Tool use: run shell commands, lock workstation, get system status, shut down the assistant
-- Secure-ish storage of NVIDIA API key (Windows Credential Manager / keyring + fallback)
-- Face profile enrollment (front / left / right photos)
-- Configurable assistant name, user name, and voice accent (UK / US)
-- Auto-installs missing Python dependencies on first run
+- Wake-word listening (“Hey [Assistant Name]”)
+- Conversational AI via NVIDIA API (with automatic model rotation)
+- Tool calling: run commands, lock screen, open apps, get system status, terminate Jarvis
+- Offline fallback mode (time, date, lock, open, basic greetings) when internet or API is unavailable
+- Facial enrollment (stores front/left/right profile photos)
+- Configurable assistant name, user name, voice accent (UK/US), pronouns, and system voice
+- Desktop shortcut auto-creation (Windows / macOS / Linux)
+- “Triton” audio click cue and status states (Listening → Thinking → Writing response)
+- Interruption support for overlapping voice commands
+- Secure-ish API key storage (system keyring + encrypted fallback)
+- Cannot be closed via the window X (only via explicit “terminate / shut down” command)
 
 ## Requirements
 
-- Python 3.9 or newer (3.10+ recommended)
+- Python 3.9+ (3.10+ recommended)
 - Webcam (for face enrollment)
-- Microphone
-- Speakers / headphones
-- NVIDIA API key (free credits available)
-- Internet connection
+- Microphone + speakers
+- NVIDIA API key (free credits available on first signup)
+- Internet connection (for full AI responses; offline mode still works for basic commands)
 
 ### Download Python
 
-If you don’t already have Python installed:
-
-| Platform | Official Download |
-|----------|-------------------|
+| Platform   | Official Download |
+|------------|-------------------|
 | **Windows** | [https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/) |
 | **macOS**   | [https://www.python.org/downloads/macos/](https://www.python.org/downloads/macos/) |
-| **Linux**   | [https://www.python.org/downloads/source/](https://www.python.org/downloads/source/) or use your distro’s package manager (`sudo apt install python3 python3-pip python3-tk` on Debian/Ubuntu, etc.) |
+| **Linux**   | [https://www.python.org/downloads/source/](https://www.python.org/downloads/source/) or your package manager (`sudo apt install python3 python3-pip python3-tk` on Debian/Ubuntu, etc.) |
 
-**Windows tip**: During installation, check the box **“Add python.exe to PATH”**.
+**Windows tip**: Check **“Add python.exe to PATH”** during install.
 
 ### Get an NVIDIA API Key
 
-1. Go to **[https://build.nvidia.com/](https://build.nvidia.com/)** and sign in (or create a free NVIDIA Developer account).
-2. Open any model or go to API Keys / Manage API Keys.
-3. Generate a new key (it starts with `nvapi-`).
+1. Visit **[https://build.nvidia.com/](https://build.nvidia.com/)** and sign in / create a free NVIDIA Developer account.
+2. Go to API Keys / Manage API Keys (or open any model and generate a key).
+3. Create a key (it starts with `nvapi-`).
 4. Copy it immediately — you will paste it into the Jarvis setup wizard.
-
-More details: [NVIDIA API Catalog / build.nvidia.com](https://build.nvidia.com/)
 
 ## Installation & First Run
 
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/robopup33/Jarvis-V1.git
-   cd Jarvis-V1
-   ```
+```bash
+git clone https://github.com/robopup33/Jarvis-V1.git
+cd Jarvis-V1
+```
 
-2. (Optional but recommended) Create a virtual environment:
-   ```bash
-   python -m venv venv
-   # Windows
-   venv\Scripts\activate
-   # macOS / Linux
-   source venv/bin/activate
-   ```
+Optional virtual environment:
 
-3. Run the assistant:
-   ```bash
-   python jarvis.py
-   ```
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
+```
 
-4. On first launch:
-   - The setup wizard appears.
-   - Enter:
-     - Assistant Name (default: Jarvis)
-     - Your Preferred Name
-     - Voice Accent (UK or US)
-     - Your NVIDIA API Key
-   - Click **Save & Launch**.
+Run:
 
-5. If your face profile is not enrolled, a camera window will open. Follow the on-screen instructions to capture front, left, and right views.
+```bash
+python Jarvis.py
+```
 
-6. Speak the wake phrase: **“Hey Jarvis”** (or whatever name you chose).
+On first launch the configuration wizard appears. Enter:
+
+- Assistant Name (default: Jarvis)
+- Your Preferred Name
+- Voice Accent (UK / US)
+- Pronouns
+- NVIDIA API Key
+
+Then complete the short face enrollment if prompted.
+
+Speak: **“Hey Jarvis”** (or your chosen name).
 
 ## How to Use
 
-- Say **“Hey [Assistant Name]”** to wake it.
-- Give a spoken command or question.
-- The assistant responds with voice and can optionally execute tools if you explicitly request actions (e.g. “lock the computer”, “run dir”, etc.).
-- Press **F11** for fullscreen, **Escape** to exit fullscreen.
-- Use the ⚙ gear icon to open settings (add users, reconfigure).
+- Wake with **“Hey [Assistant Name]”**
+- Give spoken commands or questions
+- Explicitly request actions for tools (e.g. “lock the computer”, “open notepad”, “what time is it”)
+- Use the ⚙ gear to change voice or reconfigure
+- To quit: say something like “shut down” / “terminate Jarvis” (the window close button is blocked by design)
 
-### Available Tools (via natural language)
+### Tools available via natural language
 
-- Run a Windows command / PowerShell command
-- Lock the computer
-- Get system status (username, time)
-- Terminate / shut down Jarvis (only when you clearly request it)
+- `run_command` – execute a shell command
+- `lock_computer` – lock the screen (Windows / macOS / Linux)
+- `open_application` – launch an app by name
+- `get_system_status` – username, platform, time
+- `terminate_jarvis` – cleanly exit the assistant
 
-## Configuration Files
+## Configuration files
 
-All settings and data are stored in:
+Stored under `~/.jarvis_core/`:
 
-```
-~/.jarvis_core/
-├── jarvis_settings.json
-├── jarvis_users.json          # face profile photos (base64)
-├── jarvis_model_usage.json    # daily model rotation tracking
-└── jarvis_sec.key             # fallback encrypted key storage
-```
+- `jarvis_settings.json`
+- `jarvis_users.json` (face photos as base64)
+- `jarvis_model_usage.json`
+- `jarvis_sec.key` (fallback encrypted key storage)
+- `jarvis_close.lock` (temporary security flag)
 
-## Security Notes
+## Security notes
 
-- The `run_command` tool can execute arbitrary shell commands. Use responsibly.
-- Your NVIDIA API key is stored via the system keyring when possible.
-- Face data is stored as JPEG images encoded in base64 — this is **not** a full face-recognition system; it simply saves enrollment photos.
-- Never share your API key or the contents of `~/.jarvis_core/`.
+- `run_command` can execute arbitrary commands — use carefully.
+- API key is stored via the OS keyring when possible.
+- Face data is simply stored photos, not a full recognition pipeline.
+- Never commit or share the contents of `~/.jarvis_core/`.
 
 ## Troubleshooting
 
-- **Missing packages**: The script tries to auto-install common dependencies. If it fails, run:
-  ```bash
-  pip install opencv-python pillow keyring sounddevice numpy SpeechRecognition pyttsx3
-  ```
-  On Windows also: `pip install pywin32`
+Missing packages (the script auto-installs most of these):
 
-- **No microphone / camera**: Grant permissions in your OS privacy settings.
+```bash
+pip install opencv-python pillow keyring sounddevice numpy SpeechRecognition pyttsx3
+```
 
-- **TTS voice not matching accent**: Install additional system voices or change the accent preference in settings.
+On Windows also:
 
-- **API errors**: Verify your NVIDIA API key and that you still have free credits / rate-limit headroom.
+```bash
+pip install pywin32
+```
+
+- Grant microphone / camera permissions in OS settings.
+- If TTS voice is wrong, pick a different system voice in Settings or change accent preference.
+- API / timeout issues → check key and free credits on build.nvidia.com; offline mode still answers basic queries.
 
 ## License
 
-This project is released as-is for educational and personal use. Use at your own risk.
+Released as-is for educational and personal use. Use at your own risk.
 
 ---
 
