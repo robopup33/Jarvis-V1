@@ -1,25 +1,23 @@
-# Get the full Jarvis.py
+# Jarvis V1.2.0
 
-The complete assistant is large (~157KB).
+## Fixes in this release
+- API key stored in keyring + encrypted fallback + settings mirror (no more "key not found")
+- Wake-word listening waits for real speech (min ~2.5s) before ending on silence
+- Face match thresholds tuned; models download on enrollment
+- Chrome path finder improved
+- **Auto-update**: on startup checks `VERSION` on this repo and replaces `Jarvis.py` if newer
 
-## What's in this build
+## Install
 
-- **NVIDIA vision UI** (`vision_ui_act`): screenshot to vision model via API key to automatic clicks/typing
-- Multi-step tool chains (up to 8 rounds)
-- Mouse control via pyautogui (Windows, macOS, Linux)
-- Local YuNet+SFace face recognition (CPU)
-- Owner/guest roles and expanded PC tools
+1. Download `Jarvis.py` from the release artifact / chat download
+2. Place in this folder as `Jarvis.py`
+3. Run `python Jarvis.py` (or `python3 Jarvis.py`)
 
-## macOS
-
-Grant Accessibility and Screen Recording to Terminal/Python.
-
-## Linux
-
-Prefer X11. Optional: `sudo apt install xdotool scrot`
-
-Run the validated `Jarvis.py` from the project release artifact, then:
-
+Optional assemble path if `payload_*.txt` present:
 ```bash
-python Jarvis.py
+python assemble_jarvis.py
 ```
+
+Skip update check: `python Jarvis.py --no-update`
+
+Repo: https://github.com/robopup33/Jarvis-V1
